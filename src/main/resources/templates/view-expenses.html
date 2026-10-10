@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>My Expenses - Smart Expense Tracker</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body {
+            background-color: #f4f7fc;
+        }
+
+        .container-box {
+            margin-top: 40px;
+        }
+
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.08);
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold text-primary"
+           th:href="@{/dashboard}">
+            💰 Smart Expense Tracker
+        </a>
+
+        <div>
+
+            <a th:href="@{/add-expense}"
+               class="btn btn-primary me-2">
+                ➕ Add Expense
+            </a>
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  style="display:inline;">
+
+                <button type="submit"
+                        class="btn btn-outline-danger">
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<div class="container container-box">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="text-primary">
+                📋 My Expenses
+            </h2>
+
+            <p class="text-muted">
+                Manage your personal expenses
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Total -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="summary-card">
+
+                <h6 class="text-muted">
+                    Total Expenses
+                </h6>
+
+                <h3 class="text-primary">
+                    ₹<span th:text="${total}">0</span>
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="summary-card">
+
+                <h6 class="text-muted">
+                    Number of Expenses
+                </h6>
+
+                <h3 th:text="${#lists.size(expenses)}">
+                    0
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <form th:action="@{/expenses}"
+          method="get"
+          class="row mb-4">
+
+        <div class="col-md-8">
+
+            <input type="text"
+                   name="keyword"
+                   th:value="${keyword}"
+                   class="form-control"
+                   placeholder="Search expense by title">
+
+        </div>
+
+        <div class="col-md-4">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                🔎 Search
+            </button>
+
+            <a th:href="@{/expenses}"
+               class="btn btn-secondary">
+                Clear
+            </a>
+
+        </div>
+
+    </form>
+
+
+    <!-- Table -->
+
+    <div class="table-container">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-primary">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="expense : ${expenses}">
+
+                        <td th:text="${expense.id}"></td>
+
+                        <td th:text="${expense.title}"></td>
+
+                        <td>
+                            ₹<span th:text="${expense.amount}"></span>
+                        </td>
+
+                        <td>
+                            <span class="badge bg-info text-dark"
+                                  th:text="${expense.category}">
+                            </span>
+                        </td>
+
+                        <td th:text="${expense.date}"></td>
+
+                        <td th:text="${expense.description}"></td>
+
+                        <td>
+
+                            <a th:href="@{/edit-expense/{id}(id=${expense.id})}"
+                               class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+
+                            <a th:href="@{/delete-expense/{id}(id=${expense.id})}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this expense?');">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr th:if="${#lists.isEmpty(expenses)}">
+
+                        <td colspan="7"
+                            class="text-center py-5">
+
+                            <h5>No expenses found.</h5>
+
+                            <a th:href="@{/add-expense}"
+                               class="btn btn-primary mt-2">
+                                Add Expense
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
